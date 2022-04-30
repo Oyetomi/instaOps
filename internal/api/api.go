@@ -162,3 +162,20 @@ func GetMediaInfoByPK(sessionid string, pk int) string {
 	}
 	return resp.String()
 }
+
+// GetUserMedias returns  specified amount of a users media information
+func GetUserMedias(sessionid string, user_id, amount int) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"user_id":   strconv.Itoa(user_id),
+			"amount":    strconv.Itoa(amount),
+		}).Post("/media/user_medias")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetUserMedias)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
