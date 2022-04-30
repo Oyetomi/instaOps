@@ -179,3 +179,19 @@ func GetUserMedias(sessionid string, user_id, amount int) string {
 	}
 	return resp.String()
 }
+
+// DeleteMediaByMediaID delete a media by MediaID
+func DeleteMediaByMediaID(sessionid, media_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"media_id":  media_id,
+		}).Post("/media/delete")
+	if err != nil {
+		log.Println(errors.ErrCouldNotDeleteMedia)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
