@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/Oyetomi/instaOps/internal/errors"
 	"github.com/go-resty/resty/v2"
 	"log"
@@ -59,6 +60,23 @@ func SetSettings(settings, sessionid string) string {
 		}).Post("/auth/settings/set")
 	if err != nil {
 		log.Println(errors.ErrCouldNotSetSettings)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
+
+func GetTimelineFeed(sessionid string) string {
+	resp, err := client.R().SetQueryParams(
+		map[string]string{
+			"sessionid": sessionid,
+		}).Get("/auth/timeline_feed")
+	if err != nil {
+		fmt.Println(errors.ErrCouldNotGetFeed)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
 	}
 	return resp.String()
 }
