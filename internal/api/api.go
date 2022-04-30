@@ -146,3 +146,19 @@ func GetMediaPKFromURL(url string) string {
 	}
 	return resp.String()
 }
+
+// GetMediaInfoByPK retrieves information about a media in json format by using media pk
+func GetMediaInfoByPK(sessionid string, pk int) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"pk":        strconv.Itoa(pk),
+		}).Post("/media/info")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetMediaInfoByPk)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
