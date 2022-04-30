@@ -115,3 +115,19 @@ func GetMediaPK(media_id string) string {
 	}
 	return resp.String()
 }
+
+// GetMediaPKFromCode return mediaPK from code.
+//Example: 45818965 returns "250272944479929"
+func GetMediaPKFromCode(code string) string {
+	resp, err := client.R().SetQueryParams(
+		map[string]string{
+			"code": code,
+		}).Get("/media/pk_from_code")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetMediaPK)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
