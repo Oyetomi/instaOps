@@ -131,3 +131,18 @@ func GetMediaPKFromCode(code string) string {
 	}
 	return resp.String()
 }
+
+// GetMediaPKFromURL returns media PK from url
+func GetMediaPKFromURL(url string) string {
+	resp, err := client.R().SetQueryParams(
+		map[string]string{
+			"url": url,
+		}).Get("/media/pk_from_url")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetMediaPK)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
