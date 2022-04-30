@@ -100,3 +100,18 @@ func GetMediaID(media_pk int) string {
 	}
 	return resp.String()
 }
+
+// GetMediaPK gets short media id/pk
+func GetMediaPK(media_id string) string {
+	resp, err := client.R().SetQueryParams(
+		map[string]string{
+			"media_id": media_id,
+		}).Get("/media/pk")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetMediaPK)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
