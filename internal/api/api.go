@@ -1,10 +1,10 @@
 package api
 
 import (
-	"fmt"
 	"github.com/Oyetomi/instaOps/internal/errors"
 	"github.com/go-resty/resty/v2"
 	"log"
+	"strconv"
 )
 
 var client *resty.Client
@@ -73,7 +73,21 @@ func GetTimelineFeed(sessionid string) string {
 			"sessionid": sessionid,
 		}).Get("/auth/timeline_feed")
 	if err != nil {
-		fmt.Println(errors.ErrCouldNotGetFeed)
+		log.Println(errors.ErrCouldNotGetFeed)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
+
+func GetMediaID(media_pk int) string {
+	resp, err := client.R().SetQueryParams(
+		map[string]string{
+			"media_pk": strconv.Itoa(media_pk),
+		}).Get("/media/id")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetMediaID)
 	}
 	if resp.StatusCode() != 200 {
 		return resp.String()
