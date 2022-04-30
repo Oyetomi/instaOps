@@ -6,6 +6,9 @@ import (
 
 var (
 	ErrLoginFailed                = errors.New("login failed, incorrect username or password")
+	ErrCouldNotGetAPIVersion      = errors.New("could not get API version")
+	ErrCouldNotGetSettings        = errors.New("could not get settings")
+	ErrCouldNotSetSettings        = errors.New("could not set settings")
 	ErrFailedToGetSession         = errors.New("failed to get session")
 	ErrFileNotCreated             = errors.New("file not created")
 	ErrCouldNotWriteToFile        = errors.New("could not write to file")
