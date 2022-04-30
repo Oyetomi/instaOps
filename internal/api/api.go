@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/Oyetomi/instaOps/internal/errors"
 	"github.com/go-resty/resty/v2"
 	"log"
 )
@@ -16,7 +17,21 @@ func init() {
 func GetApiVersion() string {
 	resp, err := client.R().Get("/version")
 	if err != nil {
-		log.Println("Error getting API version")
+		log.Println(errors.ErrCouldNotGetAPIVersion)
+	}
+	return resp.String()
+}
+
+func Login(username, password string) string {
+	resp, err := client.R().SetFormData(map[string]string{
+		"username": username,
+		"password": password,
+	}).Post("/auth/login")
+	if err != nil {
+		log.Println(errors.ErrLoginFailed)
+	}
+	if resp.StatusCode() != 200 {
+		log.Println(resp.String())
 	}
 	return resp.String()
 }
