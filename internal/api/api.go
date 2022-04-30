@@ -35,3 +35,17 @@ func Login(username, password string) string {
 	}
 	return resp.String()
 }
+
+func GetSettings(sessionid string) string {
+	resp, err := client.R().SetQueryParams(
+		map[string]string{
+			"sessionid": sessionid,
+		}).Get("/auth/settings/get")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetSettings)
+	}
+	if resp.StatusCode() != 200 {
+		log.Println(resp.String())
+	}
+	return resp.String()
+}
