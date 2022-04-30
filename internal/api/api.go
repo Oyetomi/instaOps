@@ -15,6 +15,7 @@ func init() {
 	client.SetContentLength(true)
 }
 
+// GetApiVersion gets current API version .
 func GetApiVersion() string {
 	resp, err := client.R().Get("/version")
 	if err != nil {
@@ -23,6 +24,7 @@ func GetApiVersion() string {
 	return resp.String()
 }
 
+// Login logs into instagram with a valid username and password.
 func Login(username, password string) string {
 	resp, err := client.R().SetFormData(
 		map[string]string{
@@ -38,6 +40,7 @@ func Login(username, password string) string {
 	return resp.String()
 }
 
+// GetSettings retrieves cookies in json format.
 func GetSettings(sessionid string) string {
 	resp, err := client.R().SetQueryParams(
 		map[string]string{
@@ -52,6 +55,7 @@ func GetSettings(sessionid string) string {
 	return resp.String()
 }
 
+// SetSettings authenticate into instagram with a valid cookie
 func SetSettings(settings, sessionid string) string {
 	resp, err := client.R().SetFormData(
 		map[string]string{
@@ -67,6 +71,7 @@ func SetSettings(settings, sessionid string) string {
 	return resp.String()
 }
 
+// GetTimelineFeed gets instagram feed of current user.
 func GetTimelineFeed(sessionid string) string {
 	resp, err := client.R().SetQueryParams(
 		map[string]string{
@@ -81,6 +86,7 @@ func GetTimelineFeed(sessionid string) string {
 	return resp.String()
 }
 
+// GetMediaID converts media_pk to mediaID
 func GetMediaID(media_pk int) string {
 	resp, err := client.R().SetQueryParams(
 		map[string]string{
