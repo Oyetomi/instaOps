@@ -195,3 +195,21 @@ func DeleteMediaByMediaID(sessionid, media_id string) string {
 	}
 	return resp.String()
 }
+
+// EditMedia edits a media
+func EditMedia(sessionid, media_id, caption, title string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"media_id":  media_id,
+			"caption":   caption,
+			"title":     title,
+		}).Post("/media/edit")
+	if err != nil {
+		log.Println(errors.ErrCouldNotEditMedia)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
