@@ -421,3 +421,22 @@ func UploadPhoto(sessionid, file, caption string) string {
 	}
 	return resp.String()
 }
+
+// UploadPhotoByURL uploads photo to instagram
+// image should be viewable from your browser
+// image URL ending with .jpg works just fine
+func UploadPhotoByURL(sessionid, url, caption string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"url":       url,
+			"caption":   caption,
+		}).Post("/photo/upload/by_url")
+	if err != nil {
+		log.Println(errors.ErrCouldNotUploadPhoto)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
