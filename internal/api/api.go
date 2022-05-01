@@ -229,3 +229,19 @@ func GetMediaAuthor(sessionid, media_pk string) string {
 	}
 	return resp.String()
 }
+
+// GetMediaOembed Return info about media and user from post URL
+func GetMediaOembed(sessionid, url string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"url":       url,
+		}).Post("/media/oembed")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetMediaInfo)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
