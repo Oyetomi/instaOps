@@ -440,3 +440,20 @@ func UploadPhotoByURL(sessionid, url, caption string) string {
 	}
 	return resp.String()
 }
+
+// GetUserFollowers returns a specified amount of followers.
+func GetUserFollowers(sessionid, user_id, amount string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"user_id":   user_id,
+			"amount":    amount,
+		}).Post("/user/followers")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetUserFollowers)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
