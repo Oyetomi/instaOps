@@ -10,6 +10,8 @@ var (
 	ErrCouldNotGetSettings        = errors.New("could not get settings")
 	ErrCouldNotSetSettings        = errors.New("could not set settings")
 	ErrCouldNotGetMediaAuthor     = errors.New("could not get media author")
+	ErrCouldNotUploadToStory      = errors.New("could not upload to story")
+	ErrCouldNotSeeMedia           = errors.New("could not see media")
 	ErrFailedToGetSession         = errors.New("failed to get session")
 	ErrFileNotCreated             = errors.New("file not created")
 	ErrCouldNotWriteToFile        = errors.New("could not write to file")
