@@ -214,11 +214,6 @@ func EditMedia(sessionid, media_id, caption, title string) string {
 	return resp.String()
 }
 
-type media struct {
-	media_pk  int
-	sessionid string
-}
-
 // GetMediaAuthor returns info about the author of the media
 func GetMediaAuthor(sessionid, media_pk string) string {
 	resp, err := client.R().SetFormData(
