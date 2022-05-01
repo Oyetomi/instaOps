@@ -311,3 +311,19 @@ func ArchiveMedia(sessionid, media_id string) string {
 	}
 	return resp.String()
 }
+
+// UnArchiveMedia unarchives a media
+func UnArchiveMedia(sessionid, media_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"media_id":  media_id,
+		}).Post("/media/unarchive")
+	if err != nil {
+		log.Println(errors.ErrCouldNotUnArchiveMedia)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
