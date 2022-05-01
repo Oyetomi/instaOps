@@ -403,3 +403,21 @@ func DownloadVideoByURL(sessionid, url, filename, folder string) string {
 	}
 	return resp.String()
 }
+
+// UploadPhoto uploads photo to instagram
+func UploadPhoto(sessionid, file, caption string) string {
+	resp, err := client.R().SetFiles(map[string]string{
+		"file": file,
+	}).SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"caption":   caption,
+		}).Post("/photo/upload")
+	if err != nil {
+		log.Println(errors.ErrCouldNotUploadPhoto)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
