@@ -245,3 +245,19 @@ func GetMediaOembed(sessionid, url string) string {
 	}
 	return resp.String()
 }
+
+// LikeMedia like a media
+func LikeMedia(sessionid, media_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"media_id":  media_id,
+		}).Post("/media/like")
+	if err != nil {
+		log.Println(errors.ErrMediaNotLiked)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
