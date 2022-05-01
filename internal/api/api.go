@@ -261,3 +261,19 @@ func LikeMedia(sessionid, media_id string) string {
 	}
 	return resp.String()
 }
+
+// UnlikeMedia unlikes a media
+func UnlikeMedia(sessionid, media_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"media_id":  media_id,
+		}).Post("/media/unlike")
+	if err != nil {
+		log.Println(errors.ErrMediaCouldNotBeUnliked)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
