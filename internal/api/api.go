@@ -277,3 +277,5 @@ func UnlikeMedia(sessionid, media_id string) string {
 	}
 	return resp.String()
 }
+
+//TODO: implement MarkMediaAsSeen
