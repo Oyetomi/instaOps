@@ -490,3 +490,19 @@ func GetUserInfo(sessionid, user_id string) string {
 	}
 	return resp.String()
 }
+
+// GetUserInfoByUsername gets user information by username
+func GetUserInfoByUsername(sessionid, username string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"username":  username,
+		}).Post("/user/info_by_username")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetUserInfo)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
