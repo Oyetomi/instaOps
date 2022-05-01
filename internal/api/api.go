@@ -382,3 +382,24 @@ func DownloadVideo(sessionid, media_pk, folder, returnFile string) string {
 	}
 	return resp.String()
 }
+
+// DownloadVideoByURL downloads a video from instagram by specified URL
+// folder takes a folder path to save the video.
+// set returnFile to true to save the video locally
+//TODO: fix index out of range bug
+func DownloadVideoByURL(sessionid, url, filename, folder string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"url":       url,
+			"filename":  filename,
+			"folder":    folder,
+		}).Post("/video/download/by_url")
+	if err != nil {
+		log.Println(errors.ErrCouldNotDownloadVideo)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
