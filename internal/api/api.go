@@ -362,3 +362,23 @@ func UploadVideoToStoryByURL(sessionid, url string) string {
 	}
 	return resp.String()
 }
+
+// DownloadVideo downloads a video from instagram by specified media_pk
+// folder takes a folder path to save the video.
+// set returnFile to true to save the video locally
+func DownloadVideo(sessionid, media_pk, folder, returnFile string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid":  sessionid,
+			"media_pk":   media_pk,
+			"folder":     folder,
+			"returnFile": returnFile,
+		}).Post("/video/download")
+	if err != nil {
+		log.Println(errors.ErrCouldNotDownloadVideo)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
