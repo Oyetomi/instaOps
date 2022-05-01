@@ -327,3 +327,22 @@ func UnArchiveMedia(sessionid, media_id string) string {
 	}
 	return resp.String()
 }
+
+// UploadVideoToStory uploads video to instagram story
+func UploadVideoToStory(sessionid, file string) string {
+	resp, err := client.R().SetFiles(
+		map[string]string{
+			"file": file,
+		}).SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+		}).Post("/video/upload_to_story")
+	if err != nil {
+		log.Println(errors.ErrCouldNotUploadToStory)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+
+}
