@@ -279,3 +279,19 @@ func UnlikeMedia(sessionid, media_id string) string {
 }
 
 //TODO: implement MarkMediaAsSeen
+
+// GetMediaLikers gets list of users who liked a media
+func GetMediaLikers(sessionid, media_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"media_id":  media_id,
+		}).Post("/media/likers")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetMediaLikers)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
