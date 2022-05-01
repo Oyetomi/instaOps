@@ -344,5 +344,21 @@ func UploadVideoToStory(sessionid, file string) string {
 		return resp.String()
 	}
 	return resp.String()
+}
 
+// UploadVideoToStoryByURL uploads a video specified by URL to instagram story.
+// tested with .AVI format https://media-upload.net/uploads/5tfYymMulc9q.avi
+func UploadVideoToStoryByURL(sessionid, url string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"url":       url,
+		}).Post("/video/upload_to_story/by_url")
+	if err != nil {
+		log.Println(errors.ErrCouldNotUploadToStory)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
 }
