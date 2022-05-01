@@ -457,3 +457,36 @@ func GetUserFollowers(sessionid, user_id, amount string) string {
 	}
 	return resp.String()
 }
+
+// GetUserFollowing returns a specified amount of following.
+func GetUserFollowing(sessionid, user_id, amount string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"user_id":   user_id,
+			"amount":    amount,
+		}).Post("/user/following")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetUsersFollowing)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
+
+// GetUserInfo gets user information
+func GetUserInfo(sessionid, user_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"user_id":   user_id,
+		}).Post("/user/info")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetUserInfo)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
