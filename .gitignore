@@ -8,6 +8,9 @@
 # .idea folder
 .idea
 
+# settings file
+settings.json
+
 # cmd folder
 cmd
 
