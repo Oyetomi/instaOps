@@ -56,11 +56,10 @@ func GetSettings(sessionid string) string {
 }
 
 // SetSettings authenticate into instagram with a valid cookie
-func SetSettings(settings, sessionid string) string {
+func SetSettings(settings string) string {
 	resp, err := client.R().SetFormData(
 		map[string]string{
-			"settings":  settings,
-			"sessionid": sessionid,
+			"settings": settings,
 		}).Post("/auth/settings/set")
 	if err != nil {
 		log.Println(errors.ErrCouldNotSetSettings)
