@@ -618,3 +618,19 @@ func UnMutePostsOfFollower(sessionid, user_id string) string {
 	}
 	return resp.String()
 }
+
+// MuteStoriesOfAFollower mutes a follower's stories
+func MuteStoriesOfAFollower(sessionid, user_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"user_id":   user_id,
+		}).Post("/user/mute_stories_from_follow")
+	if err != nil {
+		log.Println(errors.ErrCouldNotMuteStories)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
