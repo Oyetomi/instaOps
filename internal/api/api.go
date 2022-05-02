@@ -570,3 +570,19 @@ func GetUsernameFromID(sessionid, user_id string) string {
 	}
 	return resp.String()
 }
+
+// RemoveFollower removes a follower from your list of followers
+func RemoveFollower(sessionid, user_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"user_id":   user_id,
+		}).Post("/user/remove_follower")
+	if err != nil {
+		log.Println(errors.ErrCouldNotRemoveFollower)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
