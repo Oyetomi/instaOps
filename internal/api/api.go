@@ -650,3 +650,21 @@ func UnMuteStoriesOfAFollower(sessionid, user_id string) string {
 	}
 	return resp.String()
 }
+
+// DownloadIgtv downloads igtv video
+func DownloadIgtv(sessionid, media_pk, folder, returnFile string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid":  sessionid,
+			"media_pk":   media_pk,
+			"folder":     folder,
+			"returnFile": returnFile,
+		}).Post("/igtv/download")
+	if err != nil {
+		log.Println(errors.ErrCouldNotDownloadIgtv)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
