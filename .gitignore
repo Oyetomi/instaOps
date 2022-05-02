@@ -5,6 +5,9 @@
 *.so
 *.dylib
 
+# .idea folder
+.idea
+
 # cmd folder
 cmd
 
@@ -12,7 +15,7 @@ cmd
 *.test
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
-.idea
+
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
