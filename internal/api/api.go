@@ -602,3 +602,19 @@ func MutePostsOfFollower(sessionid, user_id string) string {
 	}
 	return resp.String()
 }
+
+// UnMutePostsOfFollower unmutes a posts of a follower
+func UnMutePostsOfFollower(sessionid, user_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"user_id":   user_id,
+		}).Post("/user/unmute_posts_from_follow")
+	if err != nil {
+		log.Println(errors.ErrCouldNotUnmutePosts)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
