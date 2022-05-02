@@ -554,3 +554,19 @@ func GetIDFromUsername(sessionid, username string) string {
 	}
 	return resp.String()
 }
+
+// GetUsernameFromID returns username from user_id
+func GetUsernameFromID(sessionid, user_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"user_id":   user_id,
+		}).Post("/user/username_from_id")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetUsernameFromUserId)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
