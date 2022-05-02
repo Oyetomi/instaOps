@@ -538,3 +538,19 @@ func UnFollowUser(sessionid, user_id string) string {
 	}
 	return resp.String()
 }
+
+// GetIDFromUsername return userID from username
+func GetIDFromUsername(sessionid, username string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"username":  username,
+		}).Post("/user/id_from_username")
+	if err != nil {
+		log.Println(errors.ErrCouldNotGetUserIdFromUsername)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
