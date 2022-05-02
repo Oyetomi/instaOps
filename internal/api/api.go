@@ -668,3 +668,23 @@ func DownloadIgtv(sessionid, media_pk, folder, returnFile string) string {
 	}
 	return resp.String()
 }
+
+// DownloadIgtvByURL downloads igtv video by URL
+// TODO: fix error
+func DownloadIgtvByURL(sessionid, url, filename, folder, returnFile string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid":  sessionid,
+			"url":        url,
+			"filename":   filename,
+			"folder":     folder,
+			"returnFile": returnFile,
+		}).Post("/igtv/download/by_url")
+	if err != nil {
+		log.Println(errors.ErrCouldNotDownloadIgtv)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
