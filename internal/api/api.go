@@ -586,3 +586,19 @@ func RemoveFollower(sessionid, user_id string) string {
 	}
 	return resp.String()
 }
+
+// MutePostsOfFollower mutes a posts of a follower
+func MutePostsOfFollower(sessionid, user_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"user_id":   user_id,
+		}).Post("/user/mute_posts_from_follow")
+	if err != nil {
+		log.Println(errors.ErrCouldNotMutePosts)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
