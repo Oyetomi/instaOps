@@ -522,3 +522,19 @@ func FollowUser(sessionid, user_id string) string {
 	}
 	return resp.String()
 }
+
+// UnFollowUser unfollows a user
+func UnFollowUser(sessionid, user_id string) string {
+	resp, err := client.R().SetFormData(
+		map[string]string{
+			"sessionid": sessionid,
+			"user_id":   user_id,
+		}).Post("/user/unfollow")
+	if err != nil {
+		log.Println(errors.ErrCouldNotUnFollowUser)
+	}
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
+}
