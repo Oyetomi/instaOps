@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	settingsPath = "./config/settings.json"
+	settingsPath = "../config/settings.json"
 )
 
 func createAbsolutePath(FilePath string) string {
