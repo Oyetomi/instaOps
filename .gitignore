@@ -7,10 +7,11 @@
 
 # .idea folder
 .idea
-
+# .DS_Store
+.DS_Store
 # settings file
 config/settings.json
-config
+
 # cmd folder
 cmd
 
