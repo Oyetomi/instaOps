@@ -12,11 +12,6 @@ const (
 	settingsPath = "../config/settings.json"
 )
 
-type Instagram struct {
-	Username string
-	Password string
-}
-
 func createAbsolutePath(FilePath string) string {
 	AbsFilePath, err := filepath.Abs(FilePath)
 	if err != nil {
@@ -69,7 +64,7 @@ func isEmptyFile(FilePath string) bool {
 	return true
 }
 
-func (i Instagram) Login() (sessionid string) {
+func Login(username, password string) (sessionid string) {
 	logrus.Println("logging in...")
 	// get absolute path to config/settings.json
 	settingsPath := createAbsolutePath(settingsPath)
@@ -77,7 +72,7 @@ func (i Instagram) Login() (sessionid string) {
 	// check if file is empty
 	if isEmptyFile(settingsPath) {
 		// if file is empty, we do a manual login
-		sessionid = api.Login(i.Username, i.Password)
+		sessionid = api.Login(username, password)
 		// get settings.json and save it into settings.json config file
 		settings := api.GetSettings(sessionid)
 		logrus.Infof("writing cookie to %v... ", settingsPath)
