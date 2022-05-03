@@ -9,8 +9,8 @@
 .idea
 
 # settings file
-settings.json
-
+config/settings.json
+config
 # cmd folder
 cmd
 
