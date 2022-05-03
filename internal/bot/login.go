@@ -69,7 +69,7 @@ func isEmptyFile(FilePath string) bool {
 	return true
 }
 
-func (i Instagram) Login() {
+func (i Instagram) Login() (sessionid string) {
 	logrus.Println("logging in...")
 	// get absolute path to config/settings.json
 	settingsPath := createAbsolutePath(settingsPath)
@@ -77,7 +77,7 @@ func (i Instagram) Login() {
 	// check if file is empty
 	if isEmptyFile(settingsPath) {
 		// if file is empty, we do a manual login
-		sessionid := api.Login(i.Username, i.Password)
+		sessionid = api.Login(i.Username, i.Password)
 		// get settings.json and save it into settings.json config file
 		settings := api.GetSettings(sessionid)
 		logrus.Infof("writing cookie to %v... ", settingsPath)
@@ -85,7 +85,8 @@ func (i Instagram) Login() {
 	} else {
 		contents := readFileContents(settingsPath)
 		// retrieve sessionid so we can log in
-		sessionid := api.SetSettings(string(contents))
+		sessionid = api.SetSettings(string(contents))
 		logrus.Infof("sessionID from %v -> %v", settingsPath, sessionid)
 	}
+	return sessionid
 }
