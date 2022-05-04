@@ -7,26 +7,29 @@ import (
 )
 
 const (
-	settingsPath = "./config/settings.json"
+	settingsPath = "..cmd/settings/settings.json"
 )
 
 func Login(username, password string) (sessionid string) {
 	logrus.Println("logging in...")
-	// get absolute path to config/settings.json
+
+	// get absolute path to settings/settings.json
 	settingsPath, err := file.CreateAbsolutePath(settingsPath)
 	if err != nil {
 		logrus.Errorf("could not create %v", settingsPath)
 	}
+
 	info, err := file.CheckIfFileExists(settingsPath)
 	if err != nil {
 		logrus.Errorf("%v does not exist", info.Name())
 	}
+	
 	// check if file is empty
 	empty := file.IsEmptyFile(settingsPath)
 	if empty {
 		// if file is empty, we do a manual login
 		sessionid = api.Login(username, password)
-		// get settings.json and save it into settings.json config file
+		// get settings.json and save it into settings.json settings file
 		settings := api.GetSettings(sessionid)
 		logrus.Infof("writing cookie to %v ", settingsPath)
 		// write cookies to file
