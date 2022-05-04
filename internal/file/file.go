@@ -3,49 +3,50 @@ package file
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
+	"io/fs"
 	"os"
 	"path/filepath"
 )
 
-func CreateAbsolutePath(FilePath string) string {
+type FileInfo fs.FileInfo
+
+func CreateAbsolutePath(FilePath string) (string, error) {
 	AbsFilePath, err := filepath.Abs(FilePath)
 	if err != nil {
-		logrus.Fatal(err)
+		return AbsFilePath, nil
 	}
-	return AbsFilePath
+	return AbsFilePath, err
 }
 
-func CreateFile(FilePath string) {
-	if _, err := os.Create(FilePath); err != nil {
-		logrus.Fatalf("could not create %v", FilePath)
-	} else {
-		logrus.Infof("%v file created", FilePath)
+func CreateFile(FilePath string) error {
+	_, err := os.Create(FilePath)
+	if err != nil {
+		return err
 	}
+	return nil
 }
 
-func CheckIfFileExists(FilePath string) {
-	if info, err := os.Stat(FilePath); err == nil {
-		logrus.Infof("%v file exists", info.Name())
-	} else {
-		if errors.Is(err, os.ErrNotExist) {
-			CreateFile(FilePath)
-		}
+func CheckIfFileExists(FilePath string) (FileInfo, error) {
+	info, err := os.Stat(FilePath)
+	if errors.Is(err, os.ErrNotExist) {
+		CreateFile(FilePath)
 	}
+	return info, nil
 }
 
-func WriteToFile(Filepath string, contents []byte) {
+func WriteToFile(Filepath string, contents []byte) error {
 	if err := os.WriteFile(Filepath, contents, 0644); err != nil {
-		logrus.Fatalf("could not write contents to %v", Filepath)
+		return err
 	}
-	logrus.Infof("wrote contents to %v ", Filepath)
+	return nil
 }
 
-func ReadFileContents(Filepath string) string {
+func ReadFileContents(Filepath string) ([]byte, error) {
 	contents, err := os.ReadFile(Filepath)
 	if err != nil {
-		logrus.Infof("could not read contents of %v", Filepath)
+		return []byte{}, err
 	}
-	return string(contents)
+	return []byte(contents), nil
 }
 
 func IsEmptyFile(FilePath string) bool {
