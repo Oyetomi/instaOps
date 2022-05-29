@@ -13,9 +13,9 @@ type FileInfo fs.FileInfo
 func CreateAbsolutePath(FilePath string) (string, error) {
 	AbsFilePath, err := filepath.Abs(FilePath)
 	if err != nil {
-		return AbsFilePath, nil
+		return AbsFilePath, err
 	}
-	return AbsFilePath, err
+	return AbsFilePath, nil
 }
 
 func CreateFile(FilePath string) error {
