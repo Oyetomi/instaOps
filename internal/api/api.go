@@ -25,11 +25,14 @@ func GetApiVersion() string {
 }
 
 // Login logs into instagram with a valid username and password.
-func Login(username, password string) string {
+func Login(username, password, verification_code, proxy, locale, timezone string) string {
 	resp, err := client.R().SetFormData(
 		map[string]string{
-			"username": username,
-			"password": password,
+			"username":          username,
+			"password":          password,
+			"verification_code": verification_code,
+			"proxy":             proxy,
+			"timezone":          timezone,
 		}).Post("/auth/login")
 	if err != nil {
 		log.Println(errors.ErrLoginFailed)
