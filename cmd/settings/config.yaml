@@ -1,1 +1,8 @@
+username: username
+password: password
+proxy: ""
+locale: ""
+timezone: ""
 
+settingsPath: ../cmd/settings/settings.json
+yamlPath: ../cmd/config.yaml
