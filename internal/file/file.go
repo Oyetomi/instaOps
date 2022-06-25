@@ -3,7 +3,10 @@ package file
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 	"io/fs"
+	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -58,4 +61,19 @@ func IsEmptyFile(FilePath string) bool {
 		}
 	}
 	return true
+}
+
+func ReadConfig[T any](config T, yamlPath string) *T {
+	yamlPath, err := CreateAbsolutePath(yamlPath)
+	if err != nil {
+		log.Fatal("could not create yaml absolute path")
+	}
+	bytesOut, err := ioutil.ReadFile(yamlPath)
+	if err != nil {
+		log.Fatal("could not read config.yaml")
+	}
+	if err := yaml.Unmarshal(bytesOut, &config); err != nil {
+		log.Fatal("could not unmarshal config.yaml")
+	}
+	return &config
 }
