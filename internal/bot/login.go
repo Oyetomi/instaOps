@@ -3,12 +3,14 @@ package bot
 import (
 	"github.com/Oyetomi/instaOps/internal/api"
 	"github.com/Oyetomi/instaOps/internal/file"
-	"log"
+	"github.com/sirupsen/logrus"
+	"path/filepath"
 )
 
 const (
-	settingsPath = "../cmd/settings/settings.json"
-	yamlPath     = "../cmd/settings/config.yaml"
+	settingsPath = "../cmd/settings"
+	yamlFile     = "config.yaml"
+	settingsFile = "settings.json"
 )
 
 type Config struct {
@@ -24,37 +26,58 @@ type Config struct {
 
 func Login() (sessionid string) {
 	var c Config
-	cs := file.ReadConfig(c, yamlPath)
-	log.Printf("Logging into %s", cs.Username)
-	absPath, err := file.CreateAbsolutePath(settingsPath)
+	path, err := file.CreateAbsolutePath(settingsPath)
 	if err != nil {
-		log.Fatalf("Could not create %v", absPath)
+		logrus.Print("Could not create absolute path")
 	}
-	info, err := file.CheckIfFileExists(absPath)
+	ok := file.IsEmptyFile(filepath.Join(path, yamlFile))
+	if ok {
+		logrus.Fatal("yaml file is empty")
+	}
+	cfg, err := file.ReadYamlConfig(c, filepath.Join(path, yamlFile))
 	if err != nil {
-		log.Fatalf("%v does not exist", info.Name())
+		logrus.Print("Could not read yaml config")
 	}
-	empty := file.IsEmptyFile(absPath)
-	if empty {
-		// if file is empty, we do a manual login
-		sessionid := api.Login(cs.Username, cs.Password, cs.Verification_code, cs.Proxy, cs.Locale, cs.Timezone)
-		// get settings.json and save it into settings.json settings file
+	ok = file.IsExistsSettingsFolder(path)
+	switch {
+	case ok:
+		logrus.Print("Settings folder found.")
+		ok := file.CheckIfFilesExists(filepath.Join(path, yamlFile), filepath.Join(path, settingsFile))
+		if !ok {
+			if err := file.CreateFiles(filepath.Join(path, yamlFile), filepath.Join(path, settingsFile)); err != nil {
+				logrus.Fatal("Could not configuration files")
+			}
+			logrus.Fatalf("Set Up %v at %v", yamlFile, path)
+		}
+		ok = file.IsEmptyFile(filepath.Join(path, settingsFile))
+		if !ok {
+			logrus.Print("Reading Saved Settings from settings.json")
+			contents, err := file.ReadFileContents(filepath.Join(path, settingsFile))
+			if err != nil {
+				logrus.Fatalf("Could not read cookies")
+			}
+			sessionid = api.SetSettings(string(contents))
+		}
+		logrus.Print("Logging in With Credentials...")
+		sessionid := api.Login(cfg.Username, cfg.Password, cfg.Verification_code, cfg.Proxy, cfg.Locale, cfg.Timezone)
 		settings := api.GetSettings(sessionid)
-		log.Printf("Wrote cookie to %v ", absPath)
-		// write cookies to file
-		err := file.WriteToFile(absPath, []byte(settings))
-		if err != nil {
-			log.Fatalf("Could not write cookie to %v", absPath)
+		if err := file.WriteToFile(filepath.Join(path, settingsFile), []byte(settings)); err != nil {
+			logrus.Fatal("Could not write cookies")
+		} else {
+			contents, err := file.ReadFileContents(filepath.Join(path, settingsFile))
+			if err != nil {
+				logrus.Fatal("could not read cookies")
+			}
+			sessionid = api.SetSettings(string(contents))
+			logrus.Printf("Successfully logged in to %s", cfg.Username)
 		}
-	} else {
-		// read cookies
-		contents, err := file.ReadFileContents(absPath)
-		if err != nil {
-			log.Fatalf("Could not read cookies from %v", absPath)
+	case !ok:
+		logrus.Print("Settings folder not found.")
+		if err := file.CreateDirectory(settingsPath); err == nil {
+			logrus.Printf("%v created", settingsPath)
+		} else {
+			logrus.Fatalf("%v could not create", settingsPath)
 		}
-		// retrieve sessionid so we can log in
-		sessionid = api.SetSettings(string(contents))
-		log.Printf("Successfully logged in to %s", cs.Username)
 	}
 	return sessionid
 }
