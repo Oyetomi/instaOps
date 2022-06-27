@@ -35,7 +35,7 @@ func Login(username, password, verification_code, proxy, locale, timezone string
 			"timezone":          timezone,
 		}).Post("/auth/login")
 	if err != nil {
-		log.Println(errors.ErrLoginFailed)
+		log.Fatal(errors.ErrLoginFailed)
 	}
 	if resp.StatusCode() != 200 {
 		log.Println(resp.String())
@@ -50,7 +50,7 @@ func GetSettings(sessionid string) string {
 			"sessionid": sessionid,
 		}).Get("/auth/settings/get")
 	if err != nil {
-		log.Println(errors.ErrCouldNotGetSettings)
+		log.Fatal(errors.ErrCouldNotGetSettings)
 	}
 	if resp.StatusCode() != 200 {
 		log.Println(resp.String())
@@ -65,7 +65,7 @@ func SetSettings(settings string) string {
 			"settings": settings,
 		}).Post("/auth/settings/set")
 	if err != nil {
-		log.Println(errors.ErrCouldNotSetSettings)
+		log.Fatal(errors.ErrCouldNotSetSettings)
 	}
 	if resp.StatusCode() != 200 {
 		return resp.String()
