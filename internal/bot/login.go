@@ -8,10 +8,9 @@ import (
 )
 
 const (
-	settingsPath      = "../cmd/settings"
-	yamlFile          = "config.yaml"
-	settingsFile      = "settings.json"
-	sessionIDFilePath = "./sessionID.txt"
+	settingsPath = "../cmd/settings"
+	yamlFile     = "config.yaml"
+	settingsFile = "settings.json"
 )
 
 type Config struct {

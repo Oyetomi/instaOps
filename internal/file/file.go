@@ -2,16 +2,11 @@ package file
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
-	"io/fs"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 )
-
-type FileInfo fs.FileInfo
 
 func CreateAbsolutePath(FilePath string) (string, error) {
 	AbsFilePath, err := filepath.Abs(FilePath)
@@ -29,12 +24,32 @@ func CreateFile(FilePath string) error {
 	return nil
 }
 
-func CheckIfFileExists(FilePath string) (FileInfo, error) {
-	info, err := os.Stat(FilePath)
-	if errors.Is(err, os.ErrNotExist) {
-		CreateFile(FilePath)
+func CreateFiles(FilePath ...string) error {
+	for _, f := range FilePath {
+		_, err := os.Create(f)
+		if err != nil {
+			return err
+		}
 	}
-	return info, nil
+	return nil
+}
+
+func CheckIfFileExists(FilePath string) bool {
+	_, err := os.Stat(FilePath)
+	if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+	return true
+}
+
+func CheckIfFilesExists(FilePath ...string) bool {
+	for _, f := range FilePath {
+		_, err := os.Stat(f)
+		if errors.Is(err, os.ErrNotExist) {
+			return false
+		}
+	}
+	return true
 }
 
 func WriteToFile(Filepath string, contents []byte) error {
@@ -55,25 +70,34 @@ func ReadFileContents(Filepath string) ([]byte, error) {
 func IsEmptyFile(FilePath string) bool {
 	if info, err := os.Stat(FilePath); err == nil {
 		if info.Size() == 0 {
-			logrus.Warnf("%v is empty", FilePath)
-		} else {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
 }
 
-func ReadConfig[T any](config T, yamlPath string) *T {
-	yamlPath, err := CreateAbsolutePath(yamlPath)
+func ReadYamlConfig[T any](config T, yamlFile string) (*T, error) {
+	bytesOut, err := ioutil.ReadFile(yamlFile)
 	if err != nil {
-		log.Fatal("could not create yaml absolute path")
-	}
-	bytesOut, err := ioutil.ReadFile(yamlPath)
-	if err != nil {
-		log.Fatal("could not read config.yaml")
+		return &config, err
 	}
 	if err := yaml.Unmarshal(bytesOut, &config); err != nil {
-		log.Fatal("could not unmarshal config.yaml")
+		return &config, err
 	}
-	return &config
+	return &config, nil
+}
+
+func IsExistsSettingsFolder(path string) bool {
+	ok := CheckIfFileExists(path)
+	if ok {
+		return true
+	}
+	return false
+}
+
+func CreateDirectory(path string) error {
+	if err := os.Mkdir(path, 0777); err != nil {
+		return err
+	}
+	return nil
 }
