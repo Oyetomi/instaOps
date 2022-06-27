@@ -8,9 +8,10 @@ import (
 )
 
 const (
-	settingsPath = "../cmd/settings"
-	yamlFile     = "config.yaml"
-	settingsFile = "settings.json"
+	settingsPath      = "../cmd/settings"
+	yamlFile          = "config.yaml"
+	settingsFile      = "settings.json"
+	sessionIDFilePath = "./sessionID.txt"
 )
 
 type Config struct {
@@ -26,33 +27,33 @@ type Config struct {
 
 func Login() (sessionid string) {
 	var c Config
-	path, err := file.CreateAbsolutePath(settingsPath)
+	settingsPath, err := file.CreateAbsolutePath(settingsPath)
 	if err != nil {
 		logrus.Print("Could not create absolute path")
 	}
-	ok := file.IsEmptyFile(filepath.Join(path, yamlFile))
+	ok := file.IsEmptyFile(filepath.Join(settingsPath, yamlFile))
 	if ok {
 		logrus.Fatal("yaml file is empty")
 	}
-	cfg, err := file.ReadYamlConfig(c, filepath.Join(path, yamlFile))
+	cfg, err := file.ReadYamlConfig(c, filepath.Join(settingsPath, yamlFile))
 	if err != nil {
 		logrus.Print("Could not read yaml config")
 	}
-	ok = file.IsExistsSettingsFolder(path)
+	ok = file.IsExistsSettingsFolder(settingsPath)
 	switch {
 	case ok:
 		logrus.Print("Settings folder found.")
-		ok := file.CheckIfFilesExists(filepath.Join(path, yamlFile), filepath.Join(path, settingsFile))
+		ok := file.CheckIfFilesExists(filepath.Join(settingsPath, yamlFile), filepath.Join(settingsPath, settingsFile))
 		if !ok {
-			if err := file.CreateFiles(filepath.Join(path, yamlFile), filepath.Join(path, settingsFile)); err != nil {
+			if err := file.CreateFiles(filepath.Join(settingsPath, yamlFile), filepath.Join(settingsPath, settingsFile)); err != nil {
 				logrus.Fatal("Could not configuration files")
 			}
-			logrus.Fatalf("Set Up %v at %v", yamlFile, path)
+			logrus.Fatalf("Set Up %v at %v", yamlFile, settingsPath)
 		}
-		ok = file.IsEmptyFile(filepath.Join(path, settingsFile))
+		ok = file.IsEmptyFile(filepath.Join(settingsPath, settingsFile))
 		if !ok {
 			logrus.Print("Reading Saved Settings from settings.json")
-			contents, err := file.ReadFileContents(filepath.Join(path, settingsFile))
+			contents, err := file.ReadFileContents(filepath.Join(settingsPath, settingsFile))
 			if err != nil {
 				logrus.Fatalf("Could not read cookies")
 			}
@@ -61,10 +62,10 @@ func Login() (sessionid string) {
 		logrus.Print("Logging in With Credentials...")
 		sessionid := api.Login(cfg.Username, cfg.Password, cfg.Verification_code, cfg.Proxy, cfg.Locale, cfg.Timezone)
 		settings := api.GetSettings(sessionid)
-		if err := file.WriteToFile(filepath.Join(path, settingsFile), []byte(settings)); err != nil {
+		if err := file.WriteToFile(filepath.Join(settingsPath, settingsFile), []byte(settings)); err != nil {
 			logrus.Fatal("Could not write cookies")
 		} else {
-			contents, err := file.ReadFileContents(filepath.Join(path, settingsFile))
+			contents, err := file.ReadFileContents(filepath.Join(settingsPath, settingsFile))
 			if err != nil {
 				logrus.Fatal("could not read cookies")
 			}
