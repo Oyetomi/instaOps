@@ -45,7 +45,7 @@ func Login() (sessionid string) {
 		ok := file.CheckIfFilesExists(filepath.Join(settingsPath, yamlFile), filepath.Join(settingsPath, settingsFile))
 		if !ok {
 			if err := file.CreateFiles(filepath.Join(settingsPath, yamlFile), filepath.Join(settingsPath, settingsFile)); err != nil {
-				logrus.Fatal("Could not configuration files")
+				logrus.Fatal("Could not create configuration files")
 			}
 			logrus.Fatalf("Set Up %v at %v", yamlFile, settingsPath)
 		}
