@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	yamlFile     = "config.yaml"
-	settingsFile = "settings.json"
+	yamlFile    = "config.yaml"
+	cookiesFile = "cookies.json"
 )
 
 type Config struct {
@@ -20,8 +20,6 @@ type Config struct {
 	Proxy             string `yaml:"proxy"`
 	Locale            string `yaml:"locale"`
 	Timezone          string `yaml:"timezone"`
-	SettingsPath      string `yaml:"pathToSettings"`
-	YamlPath          string `yaml:"yamlPath"`
 }
 
 func Login(pathToSettings string) (sessionid string) {
@@ -42,17 +40,17 @@ func Login(pathToSettings string) (sessionid string) {
 	switch {
 	case ok:
 		logrus.Print("Settings folder found.")
-		ok := file.CheckIfFilesExists(filepath.Join(pathToSettings, yamlFile), filepath.Join(pathToSettings, settingsFile))
+		ok := file.CheckIfFilesExists(filepath.Join(pathToSettings, yamlFile), filepath.Join(pathToSettings, cookiesFile))
 		if !ok {
-			if err := file.CreateFiles(filepath.Join(pathToSettings, yamlFile), filepath.Join(pathToSettings, settingsFile)); err != nil {
+			if err := file.CreateFiles(filepath.Join(pathToSettings, yamlFile), filepath.Join(pathToSettings, cookiesFile)); err != nil {
 				logrus.Fatal(errors.ErrCouldNotCreateConfigFiles)
 			}
 			logrus.Fatalf("Set Up %v at %v", yamlFile, pathToSettings)
 		}
-		ok = file.IsEmptyFile(filepath.Join(pathToSettings, settingsFile))
+		ok = file.IsEmptyFile(filepath.Join(pathToSettings, cookiesFile))
 		if !ok {
-			logrus.Print("Reading Saved Settings from settings.json")
-			contents, err := file.ReadFileContents(filepath.Join(pathToSettings, settingsFile))
+			logrus.Print("Reading Saved Settings from cookies.json")
+			contents, err := file.ReadFileContents(filepath.Join(pathToSettings, cookiesFile))
 			if err != nil {
 				logrus.Fatal(errors.ErrCouldNotReadCookies)
 			}
@@ -61,16 +59,17 @@ func Login(pathToSettings string) (sessionid string) {
 		logrus.Print("Logging in With Credentials...")
 		sessionid := api.Login(cfg.Username, cfg.Password, cfg.Verification_code, cfg.Proxy, cfg.Locale, cfg.Timezone)
 		settings := api.GetSettings(sessionid)
-		if err := file.WriteToFile(filepath.Join(pathToSettings, settingsFile), []byte(settings)); err != nil {
+		if err := file.WriteToFile(filepath.Join(pathToSettings, cookiesFile), []byte(settings)); err != nil {
 			logrus.Fatal(errors.ErrCouldNotWriteCookies)
 		} else {
-			contents, err := file.ReadFileContents(filepath.Join(pathToSettings, settingsFile))
+			contents, err := file.ReadFileContents(filepath.Join(pathToSettings, cookiesFile))
 			if err != nil {
 				logrus.Fatal(errors.ErrCouldNotReadCookies)
 			}
 			sessionid = api.SetSettings(string(contents))
 			logrus.Printf("Successfully logged in to %s", cfg.Username)
 		}
+		return sessionid
 	case !ok:
 		logrus.Print(errors.ErrSettingsFolderNotFound)
 		if err := file.CreateDirectory(pathToSettings); err == nil {
