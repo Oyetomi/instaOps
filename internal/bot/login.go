@@ -22,6 +22,7 @@ type Config struct {
 	Timezone          string `yaml:"timezone"`
 }
 
+// Login takes a path to a settings folder containing your yaml configuration file and returns a sessionid string
 func Login(pathToSettings string) (sessionid string) {
 	var c Config
 	pathToSettings, err := file.CreateAbsolutePath(pathToSettings)

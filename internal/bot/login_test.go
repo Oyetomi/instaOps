@@ -6,6 +6,7 @@ const (
 	pathToSettings = "settings"
 )
 
+// TODO: refactor TestLogin to something more reasonable
 func TestLogin(t *testing.T) {
 	sessionid := Login(pathToSettings)
 	want := len(sessionid)
