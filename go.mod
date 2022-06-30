@@ -2,10 +2,17 @@ module github.com/Oyetomi/instaOps
 
 go 1.18
 
-require github.com/go-resty/resty/v2 v2.7.0
+require (
+	github.com/go-resty/resty/v2 v2.7.0
+	github.com/sirupsen/logrus v1.8.1
+)
 
 require (
-	github.com/sirupsen/logrus v1.8.1 // indirect
-	golang.org/x/net v0.0.0-20211029224645-99673261e6eb // indirect
-	golang.org/x/sys v0.0.0-20210423082822-04245dca01da // indirect
+	github.com/fatih/color v1.13.0 // indirect
+	github.com/mattn/go-colorable v0.1.9 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/stretchr/testify v1.7.1 // indirect
+	golang.org/x/net v0.0.0-20220412020605-290c469a71a5 // indirect
+	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

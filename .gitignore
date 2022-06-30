@@ -11,7 +11,7 @@
 .DS_Store
 
 # settings file
-cmd/settings/settings.json
+internal/bot/settings/settings.json
 
 # cmd folder
 cmd

@@ -9,7 +9,6 @@ import (
 )
 
 const (
-	settingsPath = "../cmd/settings"
 	yamlFile     = "config.yaml"
 	settingsFile = "settings.json"
 )
@@ -21,39 +20,39 @@ type Config struct {
 	Proxy             string `yaml:"proxy"`
 	Locale            string `yaml:"locale"`
 	Timezone          string `yaml:"timezone"`
-	SettingsPath      string `yaml:"settingsPath"`
+	SettingsPath      string `yaml:"pathToSettings"`
 	YamlPath          string `yaml:"yamlPath"`
 }
 
-func Login() (sessionid string) {
+func Login(pathToSettings string) (sessionid string) {
 	var c Config
-	settingsPath, err := file.CreateAbsolutePath(settingsPath)
+	pathToSettings, err := file.CreateAbsolutePath(pathToSettings)
 	if err != nil {
 		logrus.Print(errors.ErrCouldNotCreateAbsolutePath)
 	}
-	ok := file.IsEmptyFile(filepath.Join(settingsPath, yamlFile))
+	ok := file.IsEmptyFile(filepath.Join(pathToSettings, yamlFile))
 	if ok {
 		logrus.Fatal(errors.ErrYamlFileIsEmpty)
 	}
-	cfg, err := file.ReadYamlConfig(c, filepath.Join(settingsPath, yamlFile))
+	cfg, err := file.ReadYamlConfig(c, filepath.Join(pathToSettings, yamlFile))
 	if err != nil {
 		logrus.Print(errors.ErrCouldNotReadYamlFile)
 	}
-	ok = file.IsExistsSettingsFolder(settingsPath)
+	ok = file.IsExistsSettingsFolder(pathToSettings)
 	switch {
 	case ok:
 		logrus.Print("Settings folder found.")
-		ok := file.CheckIfFilesExists(filepath.Join(settingsPath, yamlFile), filepath.Join(settingsPath, settingsFile))
+		ok := file.CheckIfFilesExists(filepath.Join(pathToSettings, yamlFile), filepath.Join(pathToSettings, settingsFile))
 		if !ok {
-			if err := file.CreateFiles(filepath.Join(settingsPath, yamlFile), filepath.Join(settingsPath, settingsFile)); err != nil {
+			if err := file.CreateFiles(filepath.Join(pathToSettings, yamlFile), filepath.Join(pathToSettings, settingsFile)); err != nil {
 				logrus.Fatal(errors.ErrCouldNotCreateConfigFiles)
 			}
-			logrus.Fatalf("Set Up %v at %v", yamlFile, settingsPath)
+			logrus.Fatalf("Set Up %v at %v", yamlFile, pathToSettings)
 		}
-		ok = file.IsEmptyFile(filepath.Join(settingsPath, settingsFile))
+		ok = file.IsEmptyFile(filepath.Join(pathToSettings, settingsFile))
 		if !ok {
 			logrus.Print("Reading Saved Settings from settings.json")
-			contents, err := file.ReadFileContents(filepath.Join(settingsPath, settingsFile))
+			contents, err := file.ReadFileContents(filepath.Join(pathToSettings, settingsFile))
 			if err != nil {
 				logrus.Fatal(errors.ErrCouldNotReadCookies)
 			}
@@ -62,10 +61,10 @@ func Login() (sessionid string) {
 		logrus.Print("Logging in With Credentials...")
 		sessionid := api.Login(cfg.Username, cfg.Password, cfg.Verification_code, cfg.Proxy, cfg.Locale, cfg.Timezone)
 		settings := api.GetSettings(sessionid)
-		if err := file.WriteToFile(filepath.Join(settingsPath, settingsFile), []byte(settings)); err != nil {
+		if err := file.WriteToFile(filepath.Join(pathToSettings, settingsFile), []byte(settings)); err != nil {
 			logrus.Fatal(errors.ErrCouldNotWriteCookies)
 		} else {
-			contents, err := file.ReadFileContents(filepath.Join(settingsPath, settingsFile))
+			contents, err := file.ReadFileContents(filepath.Join(pathToSettings, settingsFile))
 			if err != nil {
 				logrus.Fatal(errors.ErrCouldNotReadCookies)
 			}
@@ -74,10 +73,10 @@ func Login() (sessionid string) {
 		}
 	case !ok:
 		logrus.Print(errors.ErrSettingsFolderNotFound)
-		if err := file.CreateDirectory(settingsPath); err == nil {
-			logrus.Printf("%v created", settingsPath)
+		if err := file.CreateDirectory(pathToSettings); err == nil {
+			logrus.Printf("%v created", pathToSettings)
 		} else {
-			logrus.Fatalf("%v %s", errors.ErrCouldNotCreate, settingsPath)
+			logrus.Fatalf("%v %s", errors.ErrCouldNotCreate, pathToSettings)
 		}
 	}
 	return sessionid
