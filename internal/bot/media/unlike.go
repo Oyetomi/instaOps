@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-// UnLikeMedia likes a media
+// UnLikeMedia unlikes a media
 func UnLikeMedia(sessionid, media_id string) {
 	_, err := api.UnlikeMedia(sessionid, media_id)
 	if err != nil {
