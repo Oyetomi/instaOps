@@ -249,53 +249,44 @@ func GetMediaOembed(sessionid, url string) string {
 }
 
 // LikeMedia like a media
-func LikeMedia(sessionid, media_id string) string {
+func LikeMedia(sessionid, media_id string) (string, error) {
 	resp, err := client.R().SetFormData(
 		map[string]string{
 			"sessionid": sessionid,
 			"media_id":  media_id,
 		}).Post("/media/like")
-	if err != nil {
-		log.Println(errors.ErrMediaNotLiked)
-	}
 	if resp.StatusCode() != 200 {
-		return resp.String()
+		return resp.String(), err
 	}
-	return resp.String()
+	return "", nil
 }
 
 // UnlikeMedia unlikes a media
-func UnlikeMedia(sessionid, media_id string) string {
+func UnlikeMedia(sessionid, media_id string) (string, error) {
 	resp, err := client.R().SetFormData(
 		map[string]string{
 			"sessionid": sessionid,
 			"media_id":  media_id,
 		}).Post("/media/unlike")
-	if err != nil {
-		log.Println(errors.ErrMediaCouldNotBeUnliked)
-	}
 	if resp.StatusCode() != 200 {
-		return resp.String()
+		return resp.String(), err
 	}
-	return resp.String()
+	return "", nil
 }
 
 //TODO: implement MarkMediaAsSeen
 
 // GetMediaLikers gets list of users who liked a media
-func GetMediaLikers(sessionid, media_id string) string {
+func GetMediaLikers(sessionid, media_id string) (string, error) {
 	resp, err := client.R().SetFormData(
 		map[string]string{
 			"sessionid": sessionid,
 			"media_id":  media_id,
 		}).Post("/media/likers")
-	if err != nil {
-		log.Println(errors.ErrCouldNotGetMediaLikers)
-	}
 	if resp.StatusCode() != 200 {
-		return resp.String()
+		return resp.String(), err
 	}
-	return resp.String()
+	return "", err
 }
 
 // ArchiveMedia archives a media
