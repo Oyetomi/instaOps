@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/Oyetomi/instaOps/internal/errors"
 	"github.com/go-resty/resty/v2"
 	"log"
@@ -8,6 +9,12 @@ import (
 )
 
 var client *resty.Client
+
+type Resp struct {
+	Detail string `json:"detail"`
+}
+
+var R Resp
 
 func init() {
 	client = resty.New()
@@ -249,48 +256,61 @@ func GetMediaOembed(sessionid, url string) string {
 }
 
 // LikeMedia like a media
-func LikeMedia(sessionid, media_id string) (string, error) {
+func LikeMedia(sessionid, media_id string) {
 	resp, err := client.R().SetFormData(
 		map[string]string{
 			"sessionid": sessionid,
 			"media_id":  media_id,
 		}).Post("/media/like")
 	if resp.StatusCode() != 200 {
-		return resp.String(), err
+		err = json.Unmarshal([]byte(resp.String()), &R)
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(R.Detail)
+	} else {
+		log.Printf("media %v liked!", media_id)
 	}
-	return "", nil
 }
 
 // UnlikeMedia unlikes a media
-func UnlikeMedia(sessionid, media_id string) (string, error) {
+func UnlikeMedia(sessionid, media_id string) {
 	resp, err := client.R().SetFormData(
 		map[string]string{
 			"sessionid": sessionid,
 			"media_id":  media_id,
 		}).Post("/media/unlike")
 	if resp.StatusCode() != 200 {
-		return resp.String(), err
+		err = json.Unmarshal([]byte(resp.String()), &R)
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(R.Detail)
+	} else {
+		log.Printf("media %v un-liked!", media_id)
 	}
-	return "", nil
 }
 
 //TODO: implement MarkMediaAsSeen
 
 // GetMediaLikers gets list of users who liked a media
-func GetMediaLikers(sessionid, media_id string) (string, error) {
+func GetMediaLikers(sessionid, media_id string) string {
 	resp, err := client.R().SetFormData(
 		map[string]string{
 			"sessionid": sessionid,
 			"media_id":  media_id,
 		}).Post("/media/likers")
-	if resp.StatusCode() != 200 {
-		return resp.String(), err
+	if err != nil {
+		log.Println(err)
 	}
-	return "", err
+	if resp.StatusCode() != 200 {
+		return resp.String()
+	}
+	return resp.String()
 }
 
 // ArchiveMedia archives a media
-func ArchiveMedia(sessionid, media_id string) string {
+func ArchiveMedia(sessionid, media_id string) {
 	resp, err := client.R().SetFormData(
 		map[string]string{
 			"sessionid": sessionid,
@@ -300,9 +320,10 @@ func ArchiveMedia(sessionid, media_id string) string {
 		log.Println(errors.ErrCouldNotArchiveMedia)
 	}
 	if resp.StatusCode() != 200 {
-		return resp.String()
+		log.Println(resp.String())
+	} else {
+		log.Printf("media %v successfully archived", media_id)
 	}
-	return resp.String()
 }
 
 // UnArchiveMedia unarchives a media
