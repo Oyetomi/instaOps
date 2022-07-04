@@ -12,5 +12,4 @@ func SaveLikersToFile(sessionid, media_id string, path string) {
 		log.Fatalf("%v could not create file", file.Name())
 	}
 	media.GetMediaLikers(sessionid, media_id, file)
-
 }
