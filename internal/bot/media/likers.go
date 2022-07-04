@@ -12,7 +12,7 @@ type Media struct {
 	Pk string `json:"pk"`
 }
 
-// GetMediaLikers returns 1000 media likers of a particular media
+// GetMediaLikers return media likers of a particular media
 func GetMediaLikers(sessionid, media_id string, writer io.Writer) {
 	var m []Media
 	likers := api.GetMediaLikers(sessionid, media_id)
