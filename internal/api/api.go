@@ -316,11 +316,12 @@ func ArchiveMedia(sessionid, media_id string) {
 			"sessionid": sessionid,
 			"media_id":  media_id,
 		}).Post("/media/archive")
-	if err != nil {
-		log.Println(errors.ErrCouldNotArchiveMedia)
-	}
 	if resp.StatusCode() != 200 {
-		log.Println(resp.String())
+		err = json.Unmarshal([]byte(resp.String()), &R)
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(R.Detail)
 	} else {
 		log.Printf("media %v successfully archived", media_id)
 	}
